@@ -42,9 +42,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="YLScsDrawing">
-      <HintPath>..\..\..\..\..\Dropbox\Mandel\Mandel\bin\New folder\YLScsDrawing\YLScsDrawing\bin\Debug\YLScsDrawing.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
