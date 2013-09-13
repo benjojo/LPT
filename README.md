@@ -34,7 +34,9 @@ Because the algro is deeply attached to the bright yellow color, it may pick out
 
 ![YellowIssue](/Docs/yellowvan.PNG)
 
+##Usage
 
+This program takes a large stash of images and will output a final image.
 
 
 ####Licence
