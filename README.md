@@ -13,7 +13,7 @@ However, the code here does its job (most of the time) and will successfully tag
 This repo is moved into branches because of the way I made the program back in September 2012
 
 ###Single Plate
-![Single Plate](/Docs/Rev1.png)
+![Single Plate](/Docs/Rev1.PNG)
 
 This was the first version that was more of a POC, it can track a single LP and just about work.
 
@@ -22,7 +22,7 @@ Later on I had discovered that I had done a transformation incorrectly removing 
 ![S2 Plate](/Docs/Rev2.png)
 
 ###Multiplate
-![MPlate](/Docs/multiplate.png)
+![MPlate](/Docs/multiplate.PNG)
 
 This version can track more then one plate at a time with the downside of having the ability of jumping around like a crazy mad man. Mostly the most usable version however.
 
@@ -32,7 +32,7 @@ Because of the way I had visioned this in my mind in September. This plate detec
 
 Because the algro is deeply attached to the bright yellow color, it may pick out double yellow lines of other stupid stuff like shown below.
 
-![YellowIssue](/Docs/yellowvan.png)
+![YellowIssue](/Docs/yellowvan.PNG)
 
 
 
