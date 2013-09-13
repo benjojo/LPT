@@ -22,30 +22,40 @@ namespace LicencePlate
         static int[] PointXX = new int[4];
         static int[] PointYY = new int[4];
         static int BiggestQ = 0;
+        static string filepG = "";
+        static string CurrentPxArrayFile = "";
+        static int HighestX = 0;
+        static int LowestX = 0;
+        static int HighestY = 0;
+        static int LowestY = 0;
+
+
         static void Main(string[] args)
         {
-            string[] filePaths = Directory.GetFiles(@"D:\video\", "*.jpg");
-            int Number_of_frames = 679;
-            string RootDir = @"C:\Users\Ben\Downloads\swirl2\";
+            //string[] filePaths = Directory.GetFiles(@"D:\video\", "*.jpg");
+            int Number_of_frames = 518;
+            string RootDir = @"D:\Vid\Vid\";
             string FilePrefix = "imagee";
             //foreach (string filep in filePaths)
-            for (int n = 4; n < Number_of_frames; n=n+4)
+            for (int n = 3; n < Number_of_frames; n=n+3)
             {
                 string filep = RootDir + FilePrefix + n + ".jpg";
+                filepG = filep;
                 // We need to find the points of the licence plate...
                 int[] PointX = new int[4];
                 int[] PointY = new int[4];
                 bool SeenFirstBitOfYellow = false;
                 Console.WriteLine("Processing {0}", filep);
-                Bitmap Orig = (Bitmap)Bitmap.FromFile(filep);
+                Bitmap Orig = (Bitmap)ScaleImage(Image.FromFile(filep), 640, 360);
+                //Bitmap Orig = (Bitmap)Bitmap.FromFile(filep);
                 int imageoffset = 0;
-                //Console.WriteLine(Orig.GetPixel(689, 255).GetHue());
+
+
                 //Process the image to Yellow Only
                 for (int y = 0; y < Orig.Height; y++)
                 {
                     for (int x = 0; x < Orig.Width; x++)
                     {
-                        _Px[y, x] = Orig.GetPixel(x, y);
                         Color Pix = Orig.GetPixel(x,y);
                         int BWVal = 0;
                         if (!(((Pix.R + Pix.G) / 2) < Pix.B) && (Pix.GetHue() < 65 && Pix.GetHue() > 35) )
@@ -65,8 +75,9 @@ namespace LicencePlate
                         Orig.SetPixel(x,y,Color.FromArgb(BWVal,BWVal,BWVal));
                     }
                 }
-                //Orig.Save(filep.Replace(".jpg", ".png").Replace("imagee","bwout"));
-                Bitmap Final = new Bitmap(1280, 720);
+
+
+                Bitmap Final = new Bitmap(1280, 720); // This is the final image that will be saved.
                 bool FirstProcess = true;
                 for (int y = 0; y < Orig.Height; y++)
                 {
@@ -80,13 +91,13 @@ namespace LicencePlate
                                 if (IsYellow(Pix))
                                 {
                                     HighestX = 0;
-                                    LowestX = 1280;
+                                    LowestX = Orig.Width;
                                     HighestY = 0;
-                                    LowestY = 720;
+                                    LowestY = Orig.Height;
 
                                     BiggestQ = 0;
                                     Orig = FloodFill(Orig, new Point(x, y), Color.Black, Color.Orange);
-                                    if (BiggestQ > 80)
+                                    if (BiggestQ > 10)
                                     {
                                         for (int b = 0; b < 4; b++) { PointX[b] = 0; PointY[b] = 0; } // Clear the old cords.
                                         Console.WriteLine("{0}-{1}    {2}-{3}", HighestX, LowestX, HighestY, LowestY);
@@ -95,97 +106,106 @@ namespace LicencePlate
                                         int xx = (HighestX + LowestX) / 2;
                                         int yy = (HighestY + LowestY) / 2;
                                         int maxy = 0;
-                                        while (!abort)
+
+                                        try
                                         {
 
-                                            Color ppp = Orig.GetPixel(xx - 1, yy);
-                                            if (ppp.R == 255 && ppp.G == 165)
+                                            while (!abort)
                                             {
 
-                                                PointX[0] = xx;
-                                                // Ok so this is a good X. Lets Find the higest bit.
-                                                for (int xy = yy; xy > 0; xy--)
+                                                Color ppp = Orig.GetPixel(xx - 1, yy);
+                                                if (ppp.R == 255 && ppp.G == 165)
                                                 {
-                                                    if (Orig.GetPixel(xx, xy).R == 255 && Orig.GetPixel(xx, xy).G == 165 && xy > maxy)
-                                                    { maxy = xy; }
 
+                                                    PointX[0] = xx;
+                                                    // Ok so this is a good X. Lets Find the higest bit.
+                                                    for (int xy = yy; xy > 0; xy--)
+                                                    {
+                                                        if (Orig.GetPixel(xx, xy).R == 255 && Orig.GetPixel(xx, xy).G == 165 && xy > maxy)
+                                                        { maxy = xy; }
+
+                                                    }
                                                 }
+                                                //Console.WriteLine(maxy);
+                                                xx--;
+                                                PointY[0] = maxy;
+                                                if (0 >= xx) { break; }
+                                                //Orig.SetPixel(xx, yy, Color.Olive);
                                             }
-                                            //Console.WriteLine(maxy);
-                                            xx--;
-                                            PointY[0] = maxy;
-                                            if (0 >= xx) { break; }
-                                            //Orig.SetPixel(xx, yy, Color.Olive);
-                                        }
-                                        int xt = PointX[0] + 10;
-                                        maxy = 0;
-                                        for (int xy = yy; xy > 0; xy--)
-                                        {
-                                            if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
-                                            { maxy = xy; }
-                                            //Orig.SetPixel(xt, xy, Color.PaleGreen);
-                                        }
-                                        PointY[0] = maxy;
-
-                                        PointX[1] = PointX[0];
-
-                                        maxy = 0;
-                                        for (int xy = yy; xy < 720; xy++)
-                                        {
-                                            if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
-                                            { maxy = xy; }
-                                            //Orig.SetPixel(xt, xy, Color.PaleGreen);
-                                        }
-                                        PointY[1] = maxy;
-
-                                        xx = (HighestX + LowestX) / 2;
-                                        maxy = 0;
-                                        yy = (HighestY + LowestY) / 2;
-                                        while (!abort)
-                                        {
-
-                                            Color ppp = Orig.GetPixel(xx + 1, yy);
-                                            if (ppp.R == 255 && ppp.G == 165)
+                                            int xt = PointX[0] + 10;
+                                            maxy = 0;
+                                            for (int xy = yy; xy >LowestY; xy--)
                                             {
-                                                PointX[2] = xx;
-                                                PointX[3] = xx;
-                                                // Ok so this is a good X. Lets Find the higest bit.
-                                                Orig.SetPixel(xx, yy, Color.Olive);
+                                                if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
+                                                { maxy = xy; }
+                                                //Orig.SetPixel(xt, xy, Color.PaleGreen);
                                             }
-                                            //Console.WriteLine(xx);
-                                            xx++;
-                                            if (xx >= 1279) { break; }
-                                        }
+                                            PointY[0] = maxy;
 
-                                        xt = PointX[2] - 10;
-                                        maxy = 0;
-                                        for (int xy = yy; xy > 0; xy--)
+                                            PointX[1] = PointX[0];
+
+                                            maxy = 0;
+                                            for (int xy = yy; xy < HighestY; xy++)
+                                            {
+                                                if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
+                                                { maxy = xy; }
+                                                //Orig.SetPixel(xt, xy, Color.PaleGreen);
+                                            }
+                                            PointY[1] = maxy;
+
+                                            xx = (HighestX + LowestX) / 2;
+                                            maxy = 0;
+                                            yy = (HighestY + LowestY) / 2;
+                                            while (!abort)
+                                            {
+
+                                                Color ppp = Orig.GetPixel(xx + 1, yy);
+                                                if (ppp.R == 255 && ppp.G == 165)
+                                                {
+                                                    PointX[2] = xx;
+                                                    PointX[3] = xx;
+                                                    // Ok so this is a good X. Lets Find the higest bit.
+                                                    Orig.SetPixel(xx, yy, Color.Olive);
+                                                }
+                                                //Console.WriteLine(xx);
+                                                xx++;
+                                                if (xx >= HighestX) { break; }
+                                            }
+
+                                            xt = PointX[2] - 10;
+                                            maxy = 0;
+                                            for (int xy = yy; xy > LowestY; xy--)
+                                            {
+                                                if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
+                                                { maxy = xy; }
+                                                //Orig.SetPixel(xt, xy, Color.PaleGreen);
+                                            }
+                                            PointY[2] = maxy;
+
+                                            xt = PointX[2] - 10;
+                                            maxy = 0;
+                                            for (int xy = yy; xy < HighestY; xy++)
+                                            {
+                                                if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
+                                                { maxy = xy; }
+                                                //Orig.SetPixel(xt, xy, Color.PaleGreen);
+                                            }
+                                            PointY[3] = maxy;
+
+                                            Console.WriteLine("X{0} Y{1}", PointX[0], PointY[0]);
+                                            Orig.SetPixel(PointX[0], PointY[0], Color.Red);
+                                            Orig.SetPixel(PointX[1], PointY[1], Color.Red);
+                                            Orig.SetPixel(PointX[2], PointY[2], Color.Red);
+                                            Orig.SetPixel(PointX[3], PointY[3], Color.Red);
+                                            //SeenFirstBitOfYellow = true; //Comment in to only select 1st find.
+                                        }
+                                        catch
                                         {
-                                            if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
-                                            { maxy = xy; }
-                                            //Orig.SetPixel(xt, xy, Color.PaleGreen);
+                                            Console.WriteLine("Failed LP.");
                                         }
-                                        PointY[2] = maxy;
-
-                                        xt = PointX[2] - 10;
-                                        maxy = 0;
-                                        for (int xy = yy; xy < 720; xy++)
-                                        {
-                                            if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
-                                            { maxy = xy; }
-                                            //Orig.SetPixel(xt, xy, Color.PaleGreen);
-                                        }
-                                        PointY[3] = maxy;
-
-                                        Console.WriteLine("X{0} Y{1}", PointX[0], PointY[0]);
-                                        Orig.SetPixel(PointX[0], PointY[0], Color.Red);
-                                        Orig.SetPixel(PointX[1], PointY[1], Color.Red);
-                                        Orig.SetPixel(PointX[2], PointY[2], Color.Red);
-                                        Orig.SetPixel(PointX[3], PointY[3], Color.Red);
-                                        //SeenFirstBitOfYellow = true; //Comment in to only select 1st find.
-
                                         //Console.ReadLine();
-
+                                        for (int b = 0; b < 4; b++) { PointX[b] = PointX[b] * 2; PointY[b] = PointY[b] * 2; } // Clear the old cords.
+                                        
                                         if (PointX[3] != 0)
                                         {
                                             RescaleImage(new PointF(PointX[0], PointY[0]), new PointF(PointX[2], PointY[2]), new PointF(PointX[1], PointY[1]), new PointF(PointX[3], PointY[3]), 600, 90, filep.Replace("imagee", "LP"));
@@ -199,7 +219,7 @@ namespace LicencePlate
                                                 FirstProcess = false;
                                             }
 
-                                            if (PointX[3] != 0)
+                                            if (AreAllSet(PointX,PointY))
                                             {
                                                 try
                                                 {
@@ -252,57 +272,35 @@ namespace LicencePlate
                 //Console.Read();
 
                 // And now to Combine all the images together
-                
 
-                
+
+                Console.WriteLine("Saving Final Image...");
+                Orig.Dispose();
                 Final.Save(filep.Replace("imagee", "final"));
                 Final.Dispose();
                 
             }
         }
-        /*
-        static Bitmap FloodFill(Bitmap bmp,Point node, Color targetColor, Color replaceColor)
+        
+
+        static bool AreAllSet(int[] ar1, int[] ar2)
         {
-            //if (pixels[node.X, node.Y].CellColor != targetColor) return;
-
-            Queue<Point> Q = new Queue<Point>();
-            Q.Enqueue(node);
-            Console.WriteLine("Flooding {0} {1}", node.X, node.Y);
-            int CANVAS_SIZE = 1280;
-            while (Q.Count != 0)
+            foreach (int test in ar1)
             {
-                Console.WriteLine("Going to fill {0} Pix", Q.Count());
-                Point n = Q.Dequeue();
-                if (bmp.GetPixel(n.X, n.Y) != targetColor && bmp.GetPixel(n.X, n.Y) != replaceColor)
+                if (test == 0)
                 {
-                    int y = n.Y;
-                    int w = n.X;
-                    int e = n.X;
-                    while (w > 0 && bmp.GetPixel(w - 1, y) != targetColor && bmp.GetPixel(w - 1, y) != replaceColor) w--;
-                    while (e < CANVAS_SIZE - 1 && bmp.GetPixel(e + 1, y) != targetColor && bmp.GetPixel(e + 1, y) != replaceColor) e++;
-
-                    for (int x = w; x <= e; x++)
-                    {
-                        bmp.SetPixel(x,y,replaceColor);
-                        //Console.WriteLine("Set Pixel {0} {1}", x, y);
-                        if (y > 0 && bmp.GetPixel(x, y - 1) != targetColor && bmp.GetPixel(x, y - 1) != replaceColor)
-                        {
-                            Q.Enqueue(new Point(x, y - 1));
-                        }
-                        if (y < CANVAS_SIZE - 1 && bmp.GetPixel(x, y + 1) != targetColor && bmp.GetPixel(x, y + 1) != replaceColor)
-                        {
-                            Q.Enqueue(new Point(x, y + 1));
-                        }
-                    }
+                    return false;
                 }
             }
-            return bmp;
+            foreach (int test in ar2)
+            {
+                if (test == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
-        */
-        static int HighestX = 0;
-        static int LowestX = 0;
-        static int HighestY = 0;
-        static int LowestY = 0;
 
         static Bitmap FloodFill(Bitmap bmp, Point pt, Color targetColor, Color replacementColor)
         {
@@ -361,6 +359,21 @@ namespace LicencePlate
 
         static void RescaleImage(PointF TL, PointF TR, PointF LL, PointF LR, int sx, int sy,string filename)
         {
+            //static Color[,] _Px = new Color[720,1280];
+            Bitmap import = (Bitmap)Image.FromFile(filepG);
+            if (CurrentPxArrayFile != filepG)
+            {
+                Console.WriteLine("Exporting into array...");
+                for (int x = 0; x < import.Width; x++)
+                {
+                    for (int y = 0; y < import.Height; y++)
+                    {
+                        _Px[y, x] = import.GetPixel(x, y);
+                    }
+                }
+                CurrentPxArrayFile = filepG;
+            }
+            import.Dispose();
             var bmpOut = new Bitmap(sx, sy);
 
             for (int x = 0; x < sx; x++)
@@ -401,11 +414,12 @@ namespace LicencePlate
 
         static Color PolyColor(double x, double y)
         {
-            // get fractions
+            // fractions
             double xf = x - (int)x;
             double yf = y - (int)y;
 
-            // 4 colors - we're flipping sides so we can use the distance instead of inverting it later
+            // 4 colors - we're flipping sides
+            // use the distance instead of inverting
             Color cTL = _Px[(int)y + 1, (int)x + 1];
             Color cTR = _Px[(int)y + 1, (int)x + 0];
             Color cLL = _Px[(int)y + 0, (int)x + 1];
@@ -424,7 +438,7 @@ namespace LicencePlate
             dLL *= factor;
             dLR *= factor;
 
-            // accumulate parts
+            // smashing parts
             double r = dTL * cTL.R + dTR * cTR.R + dLL * cLL.R + dLR * cLR.R;
             double g = dTL * cTL.G + dTR * cTR.G + dLL * cLL.G + dLR * cLR.G;
             double b = dTL * cTL.B + dTR * cTR.B + dLL * cLL.B + dLR * cLR.B;
