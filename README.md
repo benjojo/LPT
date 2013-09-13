@@ -33,3 +33,9 @@ Because of the way I had visioned this in my mind in September. This plate detec
 Because the algro is deeply attached to the bright yellow color, it may pick out double yellow lines of other stupid stuff like shown below.
 
 ![YellowIssue](/Docs/yellowvan.png)
+
+
+
+
+####Licence
+[GPL](http://opensource.org/licenses/gpl-2.0.php)
