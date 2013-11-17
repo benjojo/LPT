@@ -226,11 +226,6 @@ namespace LicencePlate
                                             {
 
                                             }
-                                            g.DrawLine(new Pen(Color.Red, 5), new Point(PointX[0], PointY[0]), new Point(PointX[1], PointY[1]));
-                                            g.DrawLine(new Pen(Color.Red, 5), new Point(PointX[1], PointY[1]), new Point(PointX[2], PointY[2]));
-                                            g.DrawLine(new Pen(Color.Red, 5), new Point(PointX[2], PointY[2]), new Point(PointX[3], PointY[3]));
-                                            g.DrawLine(new Pen(Color.Red, 5), new Point(PointX[3], PointY[3]), new Point(PointX[0], PointY[0]));
-
                                         }
 
                                         //g.DrawImage(ScaleImage(Image.FromFile(filep.Replace(".jpg", ".png").Replace("imagee", "ProcessedOut")), 1280 / 4, 720 / 4), new Point(960, 0));
@@ -240,9 +235,7 @@ namespace LicencePlate
                                 else
                                 {
                                     Orig = FloodFill(Orig, new Point(x, y), Color.Orange, Color.Red);
-
                                 }
-                                    
                             }
                         }
                     }
@@ -272,7 +265,14 @@ namespace LicencePlate
                 
             }
         }
-        
+
+        static void DrawBox(int[] PointX, int[] PointY, Graphics g)
+        {
+            g.DrawLine(new Pen(Color.Red, 5), new Point(PointX[0], PointY[0]), new Point(PointX[1], PointY[1]));
+            g.DrawLine(new Pen(Color.Red, 5), new Point(PointX[1], PointY[1]), new Point(PointX[2], PointY[2]));
+            g.DrawLine(new Pen(Color.Red, 5), new Point(PointX[2], PointY[2]), new Point(PointX[3], PointY[3]));
+            g.DrawLine(new Pen(Color.Red, 5), new Point(PointX[3], PointY[3]), new Point(PointX[0], PointY[0]));
+        }
 
         static bool AreAllSet(int[] ar1, int[] ar2)
         {
