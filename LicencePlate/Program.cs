@@ -115,14 +115,15 @@ namespace LicencePlate
                                                 for (int xy = yy; xy > 0; xy--)
                                                 {
                                                     if (Orig.GetPixel(xx, xy).R == 255 && Orig.GetPixel(xx, xy).G == 165 && xy > maxy)
-                                                    { maxy = xy; }
+                                                        maxy = xy;
 
                                                 }
                                             }
                                             //Console.WriteLine(maxy);
                                             xx--;
                                             PointY[0] = maxy;
-                                            if (0 >= xx) { break; }
+                                            if (0 >= xx)
+                                                break;
                                             //Orig.SetPixel(xx, yy, Color.Olive);
                                         }
                                         int xt = PointX[0] + 10;
@@ -130,7 +131,7 @@ namespace LicencePlate
                                         for (int xy = yy; xy >LowestY; xy--)
                                         {
                                             if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
-                                            { maxy = xy; }
+                                                maxy = xy;
                                             //Orig.SetPixel(xt, xy, Color.PaleGreen);
                                         }
                                         PointY[0] = maxy;
@@ -141,7 +142,7 @@ namespace LicencePlate
                                         for (int xy = yy; xy < HighestY; xy++)
                                         {
                                             if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
-                                            { maxy = xy; }
+                                                maxy = xy;
                                             //Orig.SetPixel(xt, xy, Color.PaleGreen);
                                         }
                                         PointY[1] = maxy;
@@ -162,7 +163,8 @@ namespace LicencePlate
                                             }
                                             //Console.WriteLine(xx);
                                             xx++;
-                                            if (xx >= HighestX) { break; }
+                                            if (xx >= HighestX) 
+                                                break;
                                         }
 
                                         xt = PointX[2] - 10;
@@ -170,7 +172,7 @@ namespace LicencePlate
                                         for (int xy = yy; xy > LowestY; xy--)
                                         {
                                             if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
-                                            { maxy = xy; }
+                                                maxy = xy;
                                             //Orig.SetPixel(xt, xy, Color.PaleGreen);
                                         }
                                         PointY[2] = maxy;
@@ -180,7 +182,7 @@ namespace LicencePlate
                                         for (int xy = yy; xy < HighestY; xy++)
                                         {
                                             if (Orig.GetPixel(xt, xy).R != Orig.GetPixel(xt, xy).B)
-                                            { maxy = xy; }
+                                                maxy = xy;
                                             //Orig.SetPixel(xt, xy, Color.PaleGreen);
                                         }
                                         PointY[3] = maxy;
@@ -200,9 +202,8 @@ namespace LicencePlate
                                     for (int b = 0; b < 4; b++) { PointX[b] = PointX[b] * 2; PointY[b] = PointY[b] * 2; } // Clear the old cords.
                                         
                                     if (PointX[3] != 0)
-                                    {
                                         RescaleImage(new PointF(PointX[0], PointY[0]), new PointF(PointX[2], PointY[2]), new PointF(PointX[1], PointY[1]), new PointF(PointX[3], PointY[3]), 600, 90, filep.Replace("imagee", "LP"));
-                                    }
+                                    
                                     using (Graphics g = Graphics.FromImage(Final))
                                     {
                                         if (FirstProcess)
@@ -224,7 +225,7 @@ namespace LicencePlate
                                             }
                                             catch
                                             {
-
+                                                // I need to find out more on what to do about this.
                                             }
                                         }
 
