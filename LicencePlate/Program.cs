@@ -66,12 +66,7 @@ namespace LicencePlate
                                 BWVal = 0;
                             }
                         }
-                        //if (Pix.GetHue() < 65 && Pix.GetHue() > 35)
-                        //{
-                        //    BWVal = ((Pix.R + Pix.G) / 2);
-                        //}
-                        //BWVal = (int)Pix.GetHue();
-                        //BWVal = BWVal / 4;
+
                         Orig.SetPixel(x,y,Color.FromArgb(BWVal,BWVal,BWVal));
                     }
                 }
