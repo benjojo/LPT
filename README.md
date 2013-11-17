@@ -1,4 +1,4 @@
-Ben's LPT
+Ben's LPT [![Build Status](https://travis-ci.org/benjojo/LPT.png?branch=master)](https://travis-ci.org/benjojo/LPT)
 =============
 Licence Plate Tagger
 
