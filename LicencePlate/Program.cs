@@ -294,6 +294,12 @@ namespace LicencePlate
             return true;
         }
 
+
+        /*
+         * Holy hell, this one really is a cluster fuck!
+         * I have no idea how this works and this needs to be looked at since its a rather critical part to the
+         * program's operation.
+         */
         static Bitmap FloodFill(Bitmap bmp, Point pt, Color targetColor, Color replacementColor)
         {
             Queue<Point> q = new Queue<Point>();
@@ -330,7 +336,6 @@ namespace LicencePlate
                         q.Enqueue(new Point(e.X, e.Y + 1));
                     e.X++;
                 }
-                //bmp.Save(@"D:/test.png");
             }
             Console.WriteLine("Largest Q = " +LargestQ);
             BiggestQ = LargestQ;
