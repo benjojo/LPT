@@ -44,7 +44,6 @@ namespace LicencePlate
                 // We need to find the points of the licence plate...
                 int[] PointX = new int[4];
                 int[] PointY = new int[4];
-                bool SeenFirstBitOfYellow = false;
                 Console.WriteLine("Processing {0}", filep);
                 Bitmap Orig = (Bitmap)ScaleImage(Image.FromFile(filep), 640, 360);
                 //Bitmap Orig = (Bitmap)Bitmap.FromFile(filep);
@@ -189,7 +188,6 @@ namespace LicencePlate
                                     Orig.SetPixel(PointX[1], PointY[1], Color.Red);
                                     Orig.SetPixel(PointX[2], PointY[2], Color.Red);
                                     Orig.SetPixel(PointX[3], PointY[3], Color.Red);
-                                    //SeenFirstBitOfYellow = true; //Comment in to only select 1st find.
                                 }
                                 catch
                                 {
