@@ -95,7 +95,6 @@ namespace LicencePlate
                                     for (int b = 0; b < 4; b++) { PointX[b] = 0; PointY[b] = 0; } // Clear the old cords.
                                     Console.WriteLine("{0}-{1}    {2}-{3}", HighestX, LowestX, HighestY, LowestY);
 
-                                    bool abort = false;
                                     int xx = (HighestX + LowestX) / 2;
                                     int yy = (HighestY + LowestY) / 2;
                                     int maxy = 0;
@@ -103,7 +102,7 @@ namespace LicencePlate
                                     try
                                     {
 
-                                        while (!abort)
+                                        while (true)
                                         {
 
                                             Color ppp = Orig.GetPixel(xx - 1, yy);
@@ -150,7 +149,7 @@ namespace LicencePlate
                                         xx = (HighestX + LowestX) / 2;
                                         maxy = 0;
                                         yy = (HighestY + LowestY) / 2;
-                                        while (!abort)
+                                        while (true)
                                         {
 
                                             Color ppp = Orig.GetPixel(xx + 1, yy);
